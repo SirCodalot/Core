@@ -1,9 +1,9 @@
 package me.codalot.core.utils;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.StringUtil;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CollectionUtils {
 
@@ -21,6 +21,30 @@ public class CollectionUtils {
         }
 
         return map;
+    }
+
+    public static List<String> getMatches(String word, Collection<String> options) {
+        List<String> matches = new ArrayList<>();
+        StringUtil.copyPartialMatches(word.toLowerCase(), options, matches);
+        return matches;
+    }
+
+    @SuppressWarnings("all")
+    public static String[] removeFirst(int amount, String[] args) {
+        if (args.length <= amount)
+            return new String[0];
+
+        String[] newArgs = new String[args.length - amount];
+
+        for (int i = amount; i < args.length; i++) {
+            newArgs[i - amount] = args[i];
+        }
+
+        return newArgs;
+    }
+
+    public static String[] removeFirst(String[] args) {
+        return removeFirst(1, args);
     }
 
 }
