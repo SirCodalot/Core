@@ -1,9 +1,9 @@
 package me.codalot.core.utils;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.StringUtil;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CollectionUtils {
 
@@ -21,6 +21,12 @@ public class CollectionUtils {
         }
 
         return map;
+    }
+
+    public static List<String> getMatches(String word, Collection<String> options) {
+        List<String> matches = new ArrayList<>();
+        StringUtil.copyPartialMatches(word.toLowerCase(), options, matches);
+        return matches;
     }
 
 }
