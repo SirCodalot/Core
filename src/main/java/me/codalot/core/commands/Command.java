@@ -2,6 +2,7 @@ package me.codalot.core.commands;
 
 import lombok.Getter;
 import me.codalot.core.CodalotPlugin;
+import me.codalot.core.utils.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.plugin.Plugin;
@@ -51,13 +52,27 @@ public class Command implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
-        sender.sendMessage("D dads asd");
-        return false;
+        node.run(new Executor(sender), args);
+        return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
-        return null;
+
+        CmdNode currentNode = node;
+
+        int count;
+        for (count = 0; count < args.length - 1; count++) {
+            CmdNode nextNode = currentNode.getSubNodes().get(args[count]);
+
+            if (nextNode == null)
+                break;
+
+            currentNode = nextNode;
+        }
+
+        return CollectionUtils.getMatches(args[args.length - 1],
+                currentNode.getCompletionOptions(CollectionUtils.removeFirst(count, args)));
     }
 
     private static SimpleCommandMap getCommandMap() {

@@ -29,4 +29,22 @@ public class CollectionUtils {
         return matches;
     }
 
+    @SuppressWarnings("all")
+    public static String[] removeFirst(int amount, String[] args) {
+        if (args.length <= amount)
+            return new String[0];
+
+        String[] newArgs = new String[args.length - amount];
+
+        for (int i = amount; i < args.length; i++) {
+            newArgs[i - amount] = args[i];
+        }
+
+        return newArgs;
+    }
+
+    public static String[] removeFirst(String[] args) {
+        return removeFirst(1, args);
+    }
+
 }
