@@ -5,16 +5,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.function.BiConsumer;
+
 @Getter
-public abstract class Button {
+public class Button {
 
-    private ItemStack item;
+    protected ItemStack item;
 
-    public Button(ItemStack item) {
+    protected BiConsumer<? super Player, ? super ClickType> action;
+
+    public Button(ItemStack item, BiConsumer<? super Player, ? super ClickType> action) {
         this.item = item;
+        this.action = action;
     }
-
-    public abstract void onClick(Player player, ClickType type);
 
     public void setItem(ItemStack item) {
         this.item.setType(item.getType());
