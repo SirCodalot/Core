@@ -2,7 +2,6 @@ package me.codalot.core.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.json.simple.JSONObject;
@@ -18,12 +17,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class SkullUtils {
 
     private static final String MINESKIN_URL = "http://api.mineskin.org/generate/url?url=";
 
     public static ItemStack getSkull(String image) {
-        String response = "";
+        StringBuilder response = new StringBuilder();
 
         try {
             URL url = new URL(MINESKIN_URL + image);
@@ -39,7 +39,7 @@ public class SkullUtils {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                response += line;
+                response.append(line);
             }
             reader.close();
 
@@ -52,7 +52,7 @@ public class SkullUtils {
         String signature;
 
         try {
-            JSONObject json = (JSONObject) new JSONParser().parse(response);
+            JSONObject json = (JSONObject) new JSONParser().parse(response.toString());
 
             json = (JSONObject) json.get("data");
             json = (JSONObject) json.get("texture");
@@ -72,7 +72,7 @@ public class SkullUtils {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", value, signature));
 
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack item = XMaterial.PLAYER_HEAD.parseItem();
         SkullMeta meta = (SkullMeta) item.getItemMeta();
         
         try {
