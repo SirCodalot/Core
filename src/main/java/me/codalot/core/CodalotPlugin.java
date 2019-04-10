@@ -52,11 +52,10 @@ public class CodalotPlugin extends JavaPlugin implements Manager {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Manager> T getManager() {
+    public <T extends Manager> T getManager(Class<T> clazz) {
         for (Manager manager : managers) {
-            try {
+            if (manager.getClass().isAssignableFrom(clazz))
                 return (T) manager;
-            } catch (ClassCastException ignored) {}
         }
         return null;
     }
