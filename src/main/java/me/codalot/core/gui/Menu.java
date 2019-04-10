@@ -1,6 +1,8 @@
 package me.codalot.core.gui;
 
 import lombok.Getter;
+import me.codalot.core.CodalotPlugin;
+import me.codalot.core.managers.types.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@SuppressWarnings("WeakerAccess")
 public class Menu {
 
     protected Player player;
@@ -18,17 +21,19 @@ public class Menu {
 
     protected Map<Integer, Button> buttons;
 
-    public Menu(Player player, String title, int rows) {
+    public Menu(CodalotPlugin plugin, Player player, String title, int rows) {
         this.player = player;
         inventory = Bukkit.createInventory(null, rows * 9, title);
         buttons = new HashMap<>();
 
-        update();
+        plugin.getManager(MenuManager.class).getMenus().put(inventory, this);
 
+        update();
         player.openInventory(inventory);
     }
 
     protected void update() {
+        inventory.clear();
         buttons.forEach((key, button) -> inventory.setItem(key, button.getItem()));
     }
 
