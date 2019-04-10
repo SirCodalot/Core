@@ -1,0 +1,7 @@
+main: me.codalot.core.CodalotPlugin
+name: Codalot
+version: 1.0
+
+author: SirCodalot
+website: GitHub.com/SirCodalot
+description: A core plugin for SirCodalot's resources
