@@ -2,8 +2,6 @@ package me.codalot.core;
 
 import lombok.Getter;
 import me.codalot.core.managers.Manager;
-import me.codalot.core.utils.SkullUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -23,8 +21,6 @@ public class CodalotPlugin extends JavaPlugin implements Manager {
 
         if (managers == null)
             managers = new ArrayList<>();
-
-        Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().addItem(SkullUtils.getSkull("https://i.imgur.com/Xf4x9fu.png")));
 
         load();
     }
