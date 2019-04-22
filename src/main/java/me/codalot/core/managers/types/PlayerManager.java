@@ -1,7 +1,9 @@
 package me.codalot.core.managers.types;
 
 import lombok.Getter;
+import me.codalot.core.managers.Manager;
 import me.codalot.core.player.CPlayer;
+import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -10,11 +12,11 @@ import java.util.UUID;
 
 @Getter
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PlayerManager<T extends CPlayer> {
+public class PlayerManager<T extends CPlayer> implements Manager {
 
     private Class playerClass;
 
-    protected HashMap<UUID, T> players;
+    protected Map<UUID, T> players;
 
     public PlayerManager(Class<T> playerClass) {
         this.playerClass = playerClass;
@@ -38,6 +40,18 @@ public class PlayerManager<T extends CPlayer> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void load() {
+        players = new HashMap<>();
+        Bukkit.getOnlinePlayers().forEach(player -> loadPlayer(player.getUniqueId()));
+    }
+
+    @Override
+    public void save() {
+        new HashMap<>(players).forEach((uuid, player) -> unloadPlayer(player));
+        players = null;
     }
 
     public boolean isLoaded(UUID uuid) {

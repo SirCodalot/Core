@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter
+@SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class CPlayer implements ConfigurationSerializable {
 
     protected UUID uuid;
