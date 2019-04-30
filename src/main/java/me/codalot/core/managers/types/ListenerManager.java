@@ -1,6 +1,6 @@
 package me.codalot.core.managers.types;
 
-import me.codalot.core.CodalotListener;
+import me.codalot.core.listeners.CodalotListener;
 import me.codalot.core.CodalotPlugin;
 import me.codalot.core.managers.Manager;
 
@@ -21,4 +21,5 @@ public class ListenerManager implements Manager {
     public void save() {
 
     }
+
 }

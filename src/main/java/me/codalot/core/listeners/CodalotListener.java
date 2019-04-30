@@ -1,5 +1,6 @@
-package me.codalot.core;
+package me.codalot.core.listeners;
 
+import me.codalot.core.CodalotPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 

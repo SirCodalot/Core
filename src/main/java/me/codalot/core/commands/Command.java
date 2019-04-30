@@ -24,7 +24,6 @@ public class Command implements CommandExecutor, TabCompleter {
     public Command(CmdNode node, String... names) {
         this.node = node;
         this.names = names;
-
     }
 
     public void register(CodalotPlugin plugin) {
