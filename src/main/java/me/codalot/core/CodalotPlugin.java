@@ -1,9 +1,14 @@
 package me.codalot.core;
 
 import lombok.Getter;
+import me.codalot.core.listeners.types.CPlayerListener;
 import me.codalot.core.managers.Manager;
+import me.codalot.core.managers.types.ListenerManager;
+import me.codalot.core.managers.types.PlayerManager;
+import me.codalot.core.player.CPlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +26,9 @@ public class CodalotPlugin extends JavaPlugin implements Manager {
 
         if (managers == null)
             managers = new ArrayList<>();
+
+        managers.add(new PlayerManager<>(this, TestPlayer.class));
+        managers.add(new ListenerManager(this, new CPlayerListener(this)));
 
         load();
     }

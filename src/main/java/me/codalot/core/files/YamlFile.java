@@ -63,11 +63,12 @@ public class YamlFile extends YamlConfiguration {
         create();
     }
 
+    @SuppressWarnings("all")
     public Map<String, Object> asMap() {
         return CollectionUtils.toMap(getConfigurationSection(""), true);
     }
 
     public void set(Map<String, Object> map) {
-        set("", map);
+        map.forEach(this::set);
     }
 }
