@@ -1,11 +1,12 @@
 package me.codalot.core.player;
 
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import io.netty.channel.*;
+import me.codalot.core.events.PacketReadEvent;
+import me.codalot.core.events.PacketWriteEvent;
 
+import java.lang.reflect.InvocationTargetException;
+
+@SuppressWarnings("all")
 public class Injector extends ChannelDuplexHandler {
 
     private CPlayer player;
@@ -17,7 +18,11 @@ public class Injector extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
-        // TODO call event
+        PacketReadEvent event = new PacketReadEvent(player.getPlayer(), msg);
+//        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled())
+            return;
 
         super.channelRead(ctx, msg);
     }
@@ -25,7 +30,11 @@ public class Injector extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 
-        // TODO call event
+        PacketWriteEvent event = new PacketWriteEvent(player.getPlayer(), msg);
+//        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled())
+            return;
 
         super.write(ctx, msg, promise);
     }
@@ -41,6 +50,16 @@ public class Injector extends ChannelDuplexHandler {
     }
 
     private ChannelPipeline getPipeline() {
-        return ((CraftPlayer) player.getPlayer()).getHandle().playerConnection.networkManager.channel.pipeline();
+
+        try {
+            Object handle = player.getPlayer().getClass().getSuperclass().getDeclaredMethod("getHandle").invoke(player.getPlayer());
+            Object connection = handle.getClass().getDeclaredField("playerConnection").get(handle);
+            Object network = connection.getClass().getDeclaredField("networkManager").get(connection);
+            Channel channel = (Channel) network.getClass().getDeclaredField("channel").get(network);
+            return channel.pipeline();
+        } catch (NoSuchFieldException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public abstract class CPlayer implements ConfigurationSerializable {
 
     protected UUID uuid;
@@ -28,6 +28,7 @@ public abstract class CPlayer implements ConfigurationSerializable {
     }
 
     @Override
+    @SuppressWarnings("all")
     public Map<String, Object> serialize() {
         return new HashMap<>();
     }

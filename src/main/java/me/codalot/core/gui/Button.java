@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.BiConsumer;
 
 @Getter
+@SuppressWarnings("unused")
 public class Button {
 
     protected ItemStack item;

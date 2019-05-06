@@ -68,6 +68,7 @@ public class PlayerManager<T extends CPlayer> implements Manager {
         return players.containsKey(uuid);
     }
 
+    @SuppressWarnings("all")
     public T loadPlayer(UUID uuid) {
         YamlFile file = new YamlFile(plugin, uuid.toString() + ".yml", folder);
         T player = newInstance(uuid, file);
