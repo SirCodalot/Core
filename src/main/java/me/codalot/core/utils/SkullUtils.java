@@ -68,6 +68,7 @@ public class SkullUtils {
         return getSkull(value, signature);
     }
 
+    @SuppressWarnings("all")
     public static ItemStack getSkull(String value, String signature) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", value, signature));
