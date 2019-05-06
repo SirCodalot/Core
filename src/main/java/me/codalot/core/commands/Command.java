@@ -50,12 +50,14 @@ public class Command implements CommandExecutor, TabCompleter {
     }
 
     @Override
+    @SuppressWarnings("all")
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
         node.run(new Executor(sender), args);
         return true;
     }
 
     @Override
+    @SuppressWarnings("all")
     public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
 
         CmdNode currentNode = node;

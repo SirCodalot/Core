@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Getter
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public class YamlFile extends YamlConfiguration {
 
     protected String name;
@@ -63,11 +63,12 @@ public class YamlFile extends YamlConfiguration {
         create();
     }
 
+    @SuppressWarnings("all")
     public Map<String, Object> asMap() {
         return CollectionUtils.toMap(getConfigurationSection(""), true);
     }
 
     public void set(Map<String, Object> map) {
-        set("", map);
+        map.forEach(this::set);
     }
 }
