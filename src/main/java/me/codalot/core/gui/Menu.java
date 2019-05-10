@@ -26,9 +26,13 @@ public class Menu {
         inventory = Bukkit.createInventory(null, rows * 9, title);
         buttons = new HashMap<>();
 
-        plugin.getManager(MenuManager.class).getMenus().put(inventory, this);
+        plugin.getManager(MenuManager.class).register(this);
 
         update();
+        player.openInventory(inventory);
+    }
+
+    public void open() {
         player.openInventory(inventory);
     }
 
@@ -40,16 +44,30 @@ public class Menu {
     public void onClick(InventoryClickEvent event) {
         event.setCancelled(true);
 
-        if (!event.getInventory().equals(inventory))
+        if (!event.getClickedInventory().equals(inventory))
             return;
 
         Button button = buttons.get(event.getSlot());
-
         if (button == null)
             return;
 
-        button.getAction().accept((Player) event.getWhoClicked(), event.getClick());
+        if (button.getAction() != null)
+            button.getAction().accept((Player) event.getWhoClicked(), event.getClick());
+
         update();
+    }
+
+    private int coordsToSlot(int x, int y) {
+        return y * 9 + x;
+    }
+
+    public void setButton(int x, int y, Button button) {
+        int slot = coordsToSlot(x, y);
+        buttons.put(slot, button);
+    }
+
+    public void removeButton(int x, int y) {
+        buttons.remove(coordsToSlot(x, y));
     }
 
 }

@@ -3,11 +3,18 @@ package me.codalot.core.files;
 import lombok.Getter;
 import me.codalot.core.CodalotPlugin;
 import me.codalot.core.utils.CollectionUtils;
+import me.codalot.core.utils.XMaterial;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -61,6 +68,54 @@ public class YamlFile extends YamlConfiguration {
     public void reload() {
         save();
         create();
+    }
+
+    public String getColoredString(String key) {
+        String string = getString(key);
+        return string == null ? null : ChatColor.translateAlternateColorCodes('&', string);
+    }
+
+    public List<String> getColoredStringlist(String key) {
+        List<String> list = new ArrayList<>();
+
+        if (!contains(key))
+            return list;
+
+        getStringList(key).forEach(line -> list.add(ChatColor.translateAlternateColorCodes('&', line)));
+
+        return list;
+    }
+
+    public ItemStack getItemStack(String key) {
+        ConfigurationSection section = getConfigurationSection(key);
+
+        XMaterial material = XMaterial.valueOf(section.getString("material"));
+        String name = getColoredString(key + ".name");
+        List<String> lore = getColoredStringlist(key + ".lore");
+
+        ItemStack item = material.parseItem();
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(name);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return item;
+    }
+
+    @SuppressWarnings("all")
+    public List<ItemStack> getItemStackList(String key) {
+        List<ItemStack> items = new ArrayList<>();
+
+        if (!contains(key))
+            return items;
+
+        getMapList(key).forEach(map -> items.add(ItemStack.deserialize((Map<String, Object>) map)));
+
+        return items;
+    }
+
+    public Map<String, Object> getMap(String key) {
+        return CollectionUtils.toMap(getConfigurationSection(key), true);
     }
 
     public Map<String, Object> asMap() {
