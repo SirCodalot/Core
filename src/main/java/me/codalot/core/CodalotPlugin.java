@@ -41,6 +41,22 @@ public class CodalotPlugin extends JavaPlugin implements Manager {
 
         new Command(new CmdNode() {
 
+            {
+                subNodes.put("reload", new CmdNode() {
+                    @Override
+                    public void execute(Executor executor, String[] args) {
+                        reload();
+                        file.load();
+                        executor.getSender().sendMessage("reloaded");
+                    }
+
+                    @Override
+                    public void failure(Executor executor) {
+
+                    }
+                });
+            }
+
             @Override
             public void execute(Executor executor, String[] args) {
                 YamlMenu menu = new YamlMenu(instance, executor.getPlayer(), file);

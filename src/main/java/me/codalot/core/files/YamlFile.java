@@ -33,11 +33,11 @@ public class YamlFile extends YamlConfiguration {
         this.folder = folder;
         this.plugin = plugin;
 
-        create();
+        load();
     }
 
     @SuppressWarnings("all")
-    protected void create() {
+    public void load() {
         file = new File(folder, name);
 
         if (!file.exists()) {
@@ -67,7 +67,7 @@ public class YamlFile extends YamlConfiguration {
 
     public void reload() {
         save();
-        create();
+        load();
     }
 
     public String getColoredString(String key) {
@@ -86,6 +86,7 @@ public class YamlFile extends YamlConfiguration {
         return list;
     }
 
+    @SuppressWarnings("all")
     public ItemStack getItemStack(String key) {
         ConfigurationSection section = getConfigurationSection(key);
 
@@ -95,9 +96,12 @@ public class YamlFile extends YamlConfiguration {
 
         ItemStack item = material.parseItem();
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
 
         return item;
     }
@@ -114,10 +118,12 @@ public class YamlFile extends YamlConfiguration {
         return items;
     }
 
+    @SuppressWarnings("all")
     public Map<String, Object> getMap(String key) {
         return CollectionUtils.toMap(getConfigurationSection(key), true);
     }
 
+    @SuppressWarnings("all")
     public Map<String, Object> asMap() {
         return CollectionUtils.toMap(getConfigurationSection(""), true);
     }

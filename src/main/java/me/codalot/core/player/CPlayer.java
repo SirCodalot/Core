@@ -1,31 +1,49 @@
 package me.codalot.core.player;
 
 import lombok.Getter;
+import me.codalot.core.files.YamlFile;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Getter
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public abstract class CPlayer implements ConfigurationSerializable {
 
     protected UUID uuid;
+    protected YamlFile file;
 
-    public CPlayer(UUID uuid) {
+    protected Injector injector;
+
+    public CPlayer(UUID uuid, YamlFile file) {
         this.uuid = uuid;
-    }
+        this.file = file;
 
-    public CPlayer(UUID uuid, Map<String, Object> map) {
-        this(uuid);
+        injector = new Injector(this);
     }
 
     @Override
+    @SuppressWarnings("all")
     public Map<String, Object> serialize() {
-        return null;
+        return new HashMap<>();
+    }
+
+    public void save() {
+        file.set(serialize());
+        file.save();
+    }
+
+    public void onJoin() {
+        injector.inject();
+    }
+
+    public void onQuit() {
+        injector.eject();
     }
 
     public boolean isOnline() {
@@ -44,5 +62,7 @@ public abstract class CPlayer implements ConfigurationSerializable {
         return Bukkit.getOfflinePlayer(uuid);
     }
 
-    public abstract void onUnload();
+    public void unload() {
+
+    }
 }

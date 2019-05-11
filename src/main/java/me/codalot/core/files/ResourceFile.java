@@ -15,7 +15,7 @@ public class ResourceFile extends YamlFile {
 
     @Override
     @SuppressWarnings("all")
-    protected void create() {
+    public void load() {
         file = new File(folder, name);
 
         if (!file.exists()) {
