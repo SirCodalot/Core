@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Menu {
 
     protected Player player;
@@ -27,12 +27,10 @@ public class Menu {
         buttons = new HashMap<>();
 
         plugin.getManager(MenuManager.class).register(this);
-
-        update();
-        player.openInventory(inventory);
     }
 
     public void open() {
+        update();
         player.openInventory(inventory);
     }
 
@@ -43,6 +41,9 @@ public class Menu {
 
     public void onClick(InventoryClickEvent event) {
         event.setCancelled(true);
+
+        if (event.getClickedInventory() == null)
+            return;
 
         if (!event.getClickedInventory().equals(inventory))
             return;
@@ -57,17 +58,30 @@ public class Menu {
         update();
     }
 
-    private int coordsToSlot(int x, int y) {
+    protected int coordsToSlot(int x, int y) {
         return y * 9 + x;
     }
 
-    public void setButton(int x, int y, Button button) {
-        int slot = coordsToSlot(x, y);
+    @SuppressWarnings("all")
+    protected int coordsToSlot(String position) {
+        String[] split = position.replace(" ", "").split(",");
+        return coordsToSlot(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
+    }
+
+    public void setButton(int slot, Button button) {
         buttons.put(slot, button);
     }
 
+    public void setButton(int x, int y, Button button) {
+        setButton(coordsToSlot(x, y), button);
+    }
+
+    public void removeButton(int slot) {
+        buttons.remove(slot);
+    }
+
     public void removeButton(int x, int y) {
-        buttons.remove(coordsToSlot(x, y));
+        removeButton(coordsToSlot(x, y));
     }
 
 }

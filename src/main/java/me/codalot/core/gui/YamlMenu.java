@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class YamlMenu extends Menu {
 
     private YamlFile file;
@@ -32,7 +33,8 @@ public class YamlMenu extends Menu {
         update();
     }
 
-    private void loadItems() {
+    @SuppressWarnings("all")
+    protected void loadItems() {
         items = new HashMap<>();
 
         if (!file.contains("items"))
@@ -41,21 +43,27 @@ public class YamlMenu extends Menu {
         file.getConfigurationSection("items").getKeys(false).forEach(key -> items.put(key, file.getItemStack("items." + key)));
     }
 
-    @SuppressWarnings("all")
-    private void loadButtons() {
+    protected void loadButtons() {
         if (!file.contains("buttons"))
             return;
 
         for (Map<?, ?> map : file.getMapList("buttons")) {
-            String[] position = ((String) map.get("position")).replace(" ", "").split(",");
-            int x = Integer.valueOf(position[0]);
-            int y = Integer.valueOf(position[1]);
-
-            ItemStack item = items.get(map.get("item"));
-            BiConsumer<? super Player, ? super ClickType> action = actions.get(map.get("action"));
-
-            setButton(x, y, new Button(item, action));
+            loadButton(map);
         }
+    }
+
+    @SuppressWarnings("all")
+    protected int loadButton(Map<?, ?> map) {
+        String[] position = ((String) map.get("position")).replace(" ", "").split(",");
+        int x = Integer.valueOf(position[0]);
+        int y = Integer.valueOf(position[1]);
+
+        ItemStack item = items.get(map.get("item"));
+        BiConsumer<? super Player, ? super ClickType> action = actions.get(map.get("action"));
+
+        setButton(x, y, new Button(item, action));
+
+        return coordsToSlot(x, y);
     }
 
     public void addAction(String key, BiConsumer<? super Player, ? super ClickType> action) {

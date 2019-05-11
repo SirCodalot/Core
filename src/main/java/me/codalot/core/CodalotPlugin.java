@@ -5,11 +5,16 @@ import me.codalot.core.commands.CmdNode;
 import me.codalot.core.commands.Command;
 import me.codalot.core.commands.Executor;
 import me.codalot.core.files.ResourceFile;
+import me.codalot.core.gui.Button;
 import me.codalot.core.gui.YamlMenu;
+import me.codalot.core.gui.YamlScroll;
 import me.codalot.core.listeners.types.MenuListener;
 import me.codalot.core.managers.Manager;
 import me.codalot.core.managers.types.ListenerManager;
 import me.codalot.core.managers.types.MenuManager;
+import me.codalot.core.utils.XMaterial;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
@@ -31,54 +36,13 @@ public class CodalotPlugin extends JavaPlugin implements Manager {
         if (managers == null)
             managers = new ArrayList<>();
 
-        managers.add(new MenuManager());
-        managers.add(new ListenerManager(this, new MenuListener()));
-
-        ResourceFile file = new ResourceFile(instance, "menu");
-
-
         load();
-
-        new Command(new CmdNode() {
-
-            {
-                subNodes.put("reload", new CmdNode() {
-                    @Override
-                    public void execute(Executor executor, String[] args) {
-                        reload();
-                        file.load();
-                        executor.getSender().sendMessage("reloaded");
-                    }
-
-                    @Override
-                    public void failure(Executor executor) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void execute(Executor executor, String[] args) {
-                YamlMenu menu = new YamlMenu(instance, executor.getPlayer(), file);
-                menu.addAction("jump", (clicker, type) -> clicker.setVelocity(new Vector(0, 3, 0)));
-                menu.load();
-                menu.open();
-            }
-
-            @Override
-            public void failure(Executor executor) {
-
-            }
-
-        }, "test").register(this);
     }
 
-    @Override
+   @Override
     public void onDisable() {
         save();
     }
-
-    /* Managers */
 
     @Override
     public void load() {
