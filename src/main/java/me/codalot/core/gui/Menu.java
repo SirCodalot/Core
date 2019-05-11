@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Menu {
 
     protected Player player;
@@ -26,8 +26,10 @@ public class Menu {
         inventory = Bukkit.createInventory(null, rows * 9, title);
         buttons = new HashMap<>();
 
-        plugin.getManager(MenuManager.class).getMenus().put(inventory, this);
+        plugin.getManager(MenuManager.class).register(this);
+    }
 
+    public void open() {
         update();
         player.openInventory(inventory);
     }
@@ -40,16 +42,46 @@ public class Menu {
     public void onClick(InventoryClickEvent event) {
         event.setCancelled(true);
 
-        if (!event.getInventory().equals(inventory))
+        if (event.getClickedInventory() == null)
+            return;
+
+        if (!event.getClickedInventory().equals(inventory))
             return;
 
         Button button = buttons.get(event.getSlot());
-
         if (button == null)
             return;
 
-        button.getAction().accept((Player) event.getWhoClicked(), event.getClick());
+        if (button.getAction() != null)
+            button.getAction().accept((Player) event.getWhoClicked(), event.getClick());
+
         update();
+    }
+
+    protected int coordsToSlot(int x, int y) {
+        return y * 9 + x;
+    }
+
+    @SuppressWarnings("all")
+    protected int coordsToSlot(String position) {
+        String[] split = position.replace(" ", "").split(",");
+        return coordsToSlot(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
+    }
+
+    public void setButton(int slot, Button button) {
+        buttons.put(slot, button);
+    }
+
+    public void setButton(int x, int y, Button button) {
+        setButton(coordsToSlot(x, y), button);
+    }
+
+    public void removeButton(int slot) {
+        buttons.remove(slot);
+    }
+
+    public void removeButton(int x, int y) {
+        removeButton(coordsToSlot(x, y));
     }
 
 }

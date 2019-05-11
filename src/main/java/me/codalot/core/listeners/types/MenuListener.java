@@ -13,6 +13,7 @@ public class MenuListener extends CodalotListener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+
         MenuManager manager = CodalotPlugin.getInstance().getManager(MenuManager.class);
         if (manager == null)
             return;
@@ -33,7 +34,7 @@ public class MenuListener extends CodalotListener {
         if (manager.getMenus().get(event.getInventory()) == null)
             return;
 
-        manager.getMenus().remove(event.getInventory());
+        manager.update();
     }
 
 }
