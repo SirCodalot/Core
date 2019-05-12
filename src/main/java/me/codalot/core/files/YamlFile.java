@@ -14,11 +14,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @Getter
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public class YamlFile extends YamlConfiguration {
 
     protected String name;
@@ -76,12 +77,11 @@ public class YamlFile extends YamlConfiguration {
     }
 
     public List<String> getColoredStringList(String key) {
-
         if (get(key) instanceof String) {
             List<String> list = new ArrayList<>();
             list.add(getColoredString(key));
             return list;
-        } else if (get(key) instanceof List) {
+        } else if (get(key) instanceof Collection) {
             List<String> list = new ArrayList<>();
             getStringList(key).forEach(line -> list.add(ChatColor.translateAlternateColorCodes('&', line)));
             return list;

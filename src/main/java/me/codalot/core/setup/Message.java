@@ -9,20 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public class Message {
 
     protected List<String> message;
 
     public Message(String name, YamlFile file) {
-        load(name, file);
-    }
-
-    public void load(String name, YamlFile file) {
         message = file.getColoredStringList(name);
 
         if (message == null)
-            file.getColoredStringList(name + ".message");
+            message = file.getColoredStringList(name + ".message");
     }
 
     public List<String> get(String... placeholders) {
@@ -30,7 +26,7 @@ public class Message {
 
         for (String line : this.message) {
             for (String placeholder : placeholders)
-                line = line.replace(placeholder.split(":")[0], placeholder.split(":", 2)[1]);
+                line = line.replace("%" + placeholder.split(":")[0], placeholder.split(":", 2)[1]);
 
             message.add(line);
         }

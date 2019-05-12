@@ -1,7 +1,12 @@
 package me.codalot.core;
 
 import lombok.Getter;
+import me.codalot.core.commands.CmdNode;
+import me.codalot.core.commands.Command;
+import me.codalot.core.commands.Executor;
 import me.codalot.core.managers.Manager;
+import me.codalot.core.managers.types.MessageManager;
+import me.codalot.core.setup.Message;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -52,5 +57,9 @@ public class CodalotPlugin extends JavaPlugin implements Manager {
                 return (T) manager;
         }
         return null;
+    }
+
+    public Message getMessage(String key) {
+        return getManager(MessageManager.class).getMessages().get(key);
     }
 }
