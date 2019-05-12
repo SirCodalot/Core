@@ -1,4 +1,4 @@
-package me.codalot.core.gui;
+package me.codalot.core.gui.types;
 
 @SuppressWarnings("unused")
 public interface Scroll {
