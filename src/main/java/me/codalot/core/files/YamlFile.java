@@ -129,6 +129,6 @@ public class YamlFile extends YamlConfiguration {
     }
 
     public void set(Map<String, Object> map) {
-        set("", map);
+        map.forEach(this::set);
     }
 }
