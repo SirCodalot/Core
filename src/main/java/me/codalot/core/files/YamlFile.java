@@ -75,35 +75,19 @@ public class YamlFile extends YamlConfiguration {
         return string == null ? null : ChatColor.translateAlternateColorCodes('&', string);
     }
 
-    public List<String> getColoredStringlist(String key) {
-        List<String> list = new ArrayList<>();
+    public List<String> getColoredStringList(String key) {
 
-        if (!contains(key))
+        if (get(key) instanceof String) {
+            List<String> list = new ArrayList<>();
+            list.add(getColoredString(key));
             return list;
-
-        getStringList(key).forEach(line -> list.add(ChatColor.translateAlternateColorCodes('&', line)));
-
-        return list;
-    }
-
-    @SuppressWarnings("all")
-    public ItemStack getItemStack(String key) {
-        ConfigurationSection section = getConfigurationSection(key);
-
-        XMaterial material = XMaterial.valueOf(section.getString("material"));
-        String name = getColoredString(key + ".name");
-        List<String> lore = getColoredStringlist(key + ".lore");
-
-        ItemStack item = material.parseItem();
-        ItemMeta meta = item.getItemMeta();
-
-        if (meta != null) {
-            meta.setDisplayName(name);
-            meta.setLore(lore);
-            item.setItemMeta(meta);
+        } else if (get(key) instanceof List) {
+            List<String> list = new ArrayList<>();
+            getStringList(key).forEach(line -> list.add(ChatColor.translateAlternateColorCodes('&', line)));
+            return list;
         }
 
-        return item;
+        return null;
     }
 
     @SuppressWarnings("all")
