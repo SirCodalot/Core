@@ -11,7 +11,7 @@ import java.util.List;
 public class CodalotPlugin extends JavaPlugin implements Manager {
 
     @Getter
-    private static CodalotPlugin instance;
+    protected static CodalotPlugin instance;
 
     protected List<Manager> managers;
 
