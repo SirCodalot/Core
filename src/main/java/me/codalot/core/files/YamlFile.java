@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("unused")
 public class YamlFile extends YamlConfiguration {
 
     protected String name;
