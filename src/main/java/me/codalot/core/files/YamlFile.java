@@ -88,6 +88,54 @@ public class YamlFile extends YamlConfiguration {
     }
 
     @SuppressWarnings("all")
+    public ItemStack getItem(Material material, String path) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+
+        int amount = getInt(path + ".amount", 1);
+        String name = getColoredString(path + ".name");
+        List<String> lore = getColoredStringList(path + ".lore");
+
+        item.setAmount(amount);
+
+        if (name != null)
+            meta.setDisplayName(name);
+
+        if (lore != null && !lore.isEmpty())
+            meta.setLore(lore);
+
+        meta.setUnbreakable(getBoolean(path + ".unbreakable", false));
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    @SuppressWarnings("all")
+    public ItemStack getItem(String path) {
+        Material material = Material.matchMaterial(getString(path + ".material"));
+        return getItem(material, path);
+    }
+
+    @SuppressWarnings("all")
+    public void setItem(String path, ItemStack item) {
+        set(path + ".material", item.getType().toString());
+
+        if (item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+
+            if (meta.hasDisplayName())
+                set(path + ".name", meta.getDisplayName());
+
+            if (meta.hasLore())
+                set(path + ".lore", meta.getLore());
+
+            set(path + ".unbreakable", meta.isUnbreakable());
+        }
+
+        set(path + ".amount", item.getAmount());
+    }
+
+    @SuppressWarnings("all")
     public ItemStack getItemStack(String key) {
         ConfigurationSection section = getConfigurationSection(key);
         XMaterial material = XMaterial.valueOf(section.getString("material"));
