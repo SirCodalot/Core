@@ -14,11 +14,6 @@ public class TitleMessage extends Message {
 
     public TitleMessage(String name, YamlFile file) {
         super(name, file);
-    }
-
-    @Override
-    public void load(String name, YamlFile file) {
-        super.load(name, file);
 
         fadeIn = file.getInt(name + ".fade_in", 5);
         duration = file.getInt(name + ".duration", 40);
