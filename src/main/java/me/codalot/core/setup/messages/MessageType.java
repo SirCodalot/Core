@@ -1,4 +1,4 @@
-package me.codalot.core.setup;
+package me.codalot.core.setup.messages;
 
 public enum MessageType {
 

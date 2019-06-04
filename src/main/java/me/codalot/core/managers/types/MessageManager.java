@@ -6,9 +6,9 @@ import me.codalot.core.commands.Executor;
 import me.codalot.core.files.ResourceFile;
 import me.codalot.core.managers.Manager;
 import me.codalot.core.player.CPlayer;
-import me.codalot.core.setup.Message;
-import me.codalot.core.setup.MessageType;
-import me.codalot.core.setup.TitleMessage;
+import me.codalot.core.setup.messages.Message;
+import me.codalot.core.setup.messages.MessageType;
+import me.codalot.core.setup.messages.TitleMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

@@ -1,4 +1,4 @@
-package me.codalot.core.setup;
+package me.codalot.core.setup.messages;
 
 import me.codalot.core.files.YamlFile;
 import org.bukkit.command.CommandSender;

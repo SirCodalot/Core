@@ -1,4 +1,4 @@
-package me.codalot.core.setup;
+package me.codalot.core.setup.messages;
 
 import lombok.Getter;
 import me.codalot.core.commands.Executor;
