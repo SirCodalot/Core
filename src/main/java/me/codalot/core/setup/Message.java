@@ -30,7 +30,7 @@ public class Message {
 
         for (String line : this.message) {
             for (String placeholder : placeholders)
-                line = line.replace(placeholder.split(":")[0], placeholder.split(":", 2)[1]);
+                line = line.replace("%" + placeholder.split(":")[0], placeholder.split(":", 2)[1]);
 
             message.add(line);
         }
