@@ -10,10 +10,7 @@ import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @SuppressWarnings({"WeakerAccess", "unused"})
@@ -65,13 +62,29 @@ public class PlayerManager<T extends CPlayer> implements Manager {
         players = null;
     }
 
+    public Set<T> loadAllPlayers() {
+        Set<T> players = new HashSet<>();
+        for (File file : folder.listFiles()) {
+            UUID uuid = UUID.fromString(file.getName().replace(".yml", ""));
+            players.add(getOrLoad(uuid));
+        }
+        return players;
+    }
+
     public boolean isLoaded(UUID uuid) {
         return players.containsKey(uuid);
     }
 
+    private boolean isCreated(UUID uuid) {
+        return new File(folder, uuid.toString() + ".yml").exists();
+    }
+
     @SuppressWarnings("all")
-    public T loadPlayer(UUID uuid) {
-        YamlFile file = new YamlFile(plugin, uuid.toString() + ".yml", folder);
+    public T loadPlayer(UUID uuid, boolean create) {
+        if (!create && !isCreated(uuid))
+            return null;
+
+        YamlFile file = new YamlFile(plugin, uuid.toString(), folder);
         T player = newInstance(uuid, file);
         players.put(uuid, player);
 
@@ -79,6 +92,10 @@ public class PlayerManager<T extends CPlayer> implements Manager {
             player.onJoin();
 
         return player;
+    }
+
+    public T loadPlayer(UUID uuid) {
+        return loadPlayer(uuid, true);
     }
 
     public T getPlayer(UUID uuid) {
@@ -90,13 +107,21 @@ public class PlayerManager<T extends CPlayer> implements Manager {
         return uuid == null ? null : getPlayer(uuid);
     }
 
+    public T getOrLoad(UUID uuid, boolean create) {
+        return isLoaded(uuid) ? getPlayer(uuid) : loadPlayer(uuid, create);
+    }
+
     public T getOrLoad(UUID uuid) {
-        return isLoaded(uuid) ? getPlayer(uuid) : loadPlayer(uuid);
+        return getOrLoad(uuid, true);
+    }
+
+    public T getOrLoad(String name, boolean create) {
+        UUID uuid = getUuid(name);
+        return uuid == null ? null : getOrLoad(uuid, create);
     }
 
     public T getOrLoad(String name) {
-        UUID uuid = getUuid(name);
-        return uuid == null ? null : getOrLoad(uuid);
+        return getOrLoad(name, true);
     }
 
     public void unloadPlayer(T player) {

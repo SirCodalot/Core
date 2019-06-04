@@ -7,9 +7,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @SuppressWarnings("unused")
@@ -36,6 +34,10 @@ public abstract class CPlayer implements ConfigurationSerializable {
     public void save() {
         file.set(serialize());
         file.save();
+    }
+
+    public String toPlaceholder() {
+        return "name:" + getOfflinePlayer().getName();
     }
 
     public void onJoin() {
