@@ -84,12 +84,16 @@ public class PlayerManager<T extends CPlayer> implements Manager {
         return players.get(uuid);
     }
 
+    public T getPlayer(String name) {
+        return getPlayer(getUuid(name));
+    }
+
     public T getOrLoad(UUID uuid) {
         return isLoaded(uuid) ? getPlayer(uuid) : loadPlayer(uuid);
     }
 
-    public void unloadPlayer(UUID uuid) {
-        unloadPlayer(getPlayer(uuid));
+    public T getOrLoad(String name) {
+        return getOrLoad(getUuid(name));
     }
 
     public void unloadPlayer(T player) {
@@ -99,6 +103,19 @@ public class PlayerManager<T extends CPlayer> implements Manager {
         player.unload();
         player.save();
         players.remove(player.getUuid());
+    }
+
+    public void unloadPlayer(UUID uuid) {
+        unloadPlayer(getPlayer(uuid));
+    }
+
+    public void unloadIfOffline(T player) {
+        if (player.isOffline())
+            unloadPlayer(player);
+    }
+
+    private static UUID getUuid(String name) {
+        return Bukkit.getOfflinePlayer(name).getUniqueId();
     }
 
 }
