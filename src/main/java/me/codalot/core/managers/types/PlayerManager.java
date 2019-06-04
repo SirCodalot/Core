@@ -5,6 +5,7 @@ import me.codalot.core.CodalotPlugin;
 import me.codalot.core.files.YamlFile;
 import me.codalot.core.managers.Manager;
 import me.codalot.core.player.CPlayer;
+import me.codalot.core.utils.MojangUtils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -85,7 +86,8 @@ public class PlayerManager<T extends CPlayer> implements Manager {
     }
 
     public T getPlayer(String name) {
-        return getPlayer(getUuid(name));
+        UUID uuid = getUuid(name);
+        return uuid == null ? null : getPlayer(uuid);
     }
 
     public T getOrLoad(UUID uuid) {
@@ -93,7 +95,8 @@ public class PlayerManager<T extends CPlayer> implements Manager {
     }
 
     public T getOrLoad(String name) {
-        return getOrLoad(getUuid(name));
+        UUID uuid = getUuid(name);
+        return uuid == null ? null : getOrLoad(uuid);
     }
 
     public void unloadPlayer(T player) {
@@ -115,7 +118,11 @@ public class PlayerManager<T extends CPlayer> implements Manager {
     }
 
     private static UUID getUuid(String name) {
-        return Bukkit.getOfflinePlayer(name).getUniqueId();
+        try {
+            return MojangUtils.fetchUuid(name);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
