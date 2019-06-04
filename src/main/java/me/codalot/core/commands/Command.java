@@ -21,12 +21,18 @@ public class Command implements CommandExecutor, TabCompleter {
 
     private String[] names;
 
+    private boolean registered;
+
     public Command(CmdNode node, String... names) {
         this.node = node;
         this.names = names;
+        registered = false;
     }
 
     public void register(CodalotPlugin plugin) {
+        if (registered)
+            return;
+
         PluginCommand command;
 
         try {
@@ -43,10 +49,16 @@ public class Command implements CommandExecutor, TabCompleter {
 
         addToCommandMap(command, names);
 
+        registered = true;
+
     }
 
     public void unregister() {
+        if (!registered)
+            return;
+
         removeFromCommandMap(names);
+        registered = false;
     }
 
     @Override
