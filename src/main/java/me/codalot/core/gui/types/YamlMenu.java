@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class YamlMenu extends Menu {
 
-    private YamlFile file;
+    protected YamlFile file;
 
     private Map<String, ItemStack> items;
     private Map<String, BiConsumer<? super Player, ? super ClickType>> actions;

@@ -5,6 +5,7 @@ import me.codalot.core.CodalotPlugin;
 import me.codalot.core.utils.CollectionUtils;
 import me.codalot.core.utils.XMaterial;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -87,14 +88,66 @@ public class YamlFile extends YamlConfiguration {
     }
 
     @SuppressWarnings("all")
+    public ItemStack getItem(Material material, String path) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+
+        int amount = getInt(path + ".amount", 1);
+        String name = getColoredString(path + ".name");
+        List<String> lore = getColoredStringList(path + ".lore");
+
+        item.setAmount(amount);
+
+        if (name != null)
+            meta.setDisplayName(name);
+
+        if (lore != null && !lore.isEmpty())
+            meta.setLore(lore);
+
+        meta.setUnbreakable(getBoolean(path + ".unbreakable", false));
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    @SuppressWarnings("all")
+    public ItemStack getItem(String path) {
+        Material material = Material.matchMaterial(getString(path + ".material"));
+        return getItem(material, path);
+    }
+
+    @SuppressWarnings("all")
+    public void setItem(String path, ItemStack item) {
+        set(path + ".material", item.getType().toString());
+
+        if (item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+
+            if (meta.hasDisplayName())
+                set(path + ".name", meta.getDisplayName());
+
+            if (meta.hasLore())
+                set(path + ".lore", meta.getLore());
+
+            set(path + ".unbreakable", meta.isUnbreakable());
+        }
+
+        set(path + ".amount", item.getAmount());
+    }
+
+    @SuppressWarnings("all")
     public ItemStack getItemStack(String key) {
         ConfigurationSection section = getConfigurationSection(key);
-
         XMaterial material = XMaterial.valueOf(section.getString("material"));
+
+        return getItemStack(material.parseMaterial(), key);
+    }
+
+    public ItemStack getItemStack(Material material, String key) {
         String name = getColoredString(key + ".name");
         List<String> lore = getColoredStringlist(key + ".lore");
 
-        ItemStack item = material.parseItem();
+        ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
         if (meta != null) {
@@ -116,6 +169,21 @@ public class YamlFile extends YamlConfiguration {
         getMapList(key).forEach(map -> items.add(ItemStack.deserialize((Map<String, Object>) map)));
 
         return items;
+    }
+
+    public List<String> getColoredStringList(String key) {
+
+        if (get(key) instanceof String) {
+            List<String> list = new ArrayList<>();
+            list.add(getColoredString(key));
+            return list;
+        } else if (get(key) instanceof List) {
+            List<String> list = new ArrayList<>();
+            getStringList(key).forEach(line -> list.add(ChatColor.translateAlternateColorCodes('&', line)));
+            return list;
+        }
+
+        return null;
     }
 
     @SuppressWarnings("all")
