@@ -2,16 +2,16 @@ package me.codalot.core.gui;
 
 import lombok.Getter;
 import me.codalot.core.CodalotPlugin;
-import org.bukkit.Bukkit;
+import me.codalot.core.gui.data.MenuData;
+import me.codalot.core.gui.pages.Page;
+import me.codalot.core.utils.SoundUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.UUID;
 
 @Getter
 public class CodalotMenu implements InventoryHolder {
@@ -22,9 +22,9 @@ public class CodalotMenu implements InventoryHolder {
     private Inventory inventory;
     private Page page;
 
-    public CodalotMenu(MenuData data, CodalotMenu previous) {
+    public CodalotMenu(MenuData data) {
         this.data = data;
-        this.previous = previous;
+        this.previous = null;
 
         inventory = data.createInventory(this);
         page = data.getPage();
@@ -32,16 +32,29 @@ public class CodalotMenu implements InventoryHolder {
         update();
     }
 
-    public CodalotMenu(MenuData data) {
-        this(data, null);
-    }
-
     protected void update() {
         page.apply(inventory);
     }
 
-    public void open(Player player) {
+    public void open(Player player, boolean switched) {
+        if (switched)
+            SoundUtils.play(player, data.getSwitchSound());
+        else
+            SoundUtils.play(player, data.getOpenSound());
+
         player.openInventory(inventory);
+    }
+
+    public void open(Player player) {
+        boolean switched = false;
+
+        if (isInCodalotMenu(player)) {
+            if (previous == null)
+                previous = (CodalotMenu) player.getOpenInventory().getTopInventory().getHolder();
+            switched = true;
+        }
+
+        open(player, switched);
     }
 
     public void onInventoryClick(InventoryClickEvent event) {
@@ -57,25 +70,36 @@ public class CodalotMenu implements InventoryHolder {
     }
 
     public void onInventoryClose(InventoryCloseEvent event, CodalotPlugin plugin) {
-        if (!data.isOpenPrevious() || previous == null)
-            return;
+        Player player = (Player) event.getPlayer();
 
-        final UUID uuid = event.getPlayer().getUniqueId();
+        boolean canGoBack = previous != null && data.isOpenPrevious();
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                Player player = Bukkit.getPlayer(uuid);
-
-                if (player == null)
+                if (!player.isOnline())
                     return;
 
-                if (player.getOpenInventory().getTopInventory() instanceof PlayerInventory)
+                if (!canGoBack) {
+                    if (!isInCodalotMenu(player))
+                        SoundUtils.play(player, data.getCloseSound());
                     return;
+                }
 
-                previous.open(player);
+                if (!isInCodalotMenu(player))
+                    previous.open(player, true);
+
             }
         }.runTaskLater(plugin, 1);
+
+    }
+
+    private static boolean hasOpenInventory(Player player) {
+        return player.getOpenInventory().getTopInventory().getType() != InventoryType.CRAFTING;
+    }
+
+    private static boolean isInCodalotMenu(Player player) {
+        return player.getOpenInventory().getTopInventory().getHolder() instanceof CodalotMenu;
     }
 
 }

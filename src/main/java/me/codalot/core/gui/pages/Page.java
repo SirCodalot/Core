@@ -1,5 +1,6 @@
-package me.codalot.core.gui;
+package me.codalot.core.gui.pages;
 
+import me.codalot.core.gui.components.Button;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -7,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 
+@SuppressWarnings("WeakerAccess")
 public class Page extends HashMap<Integer, Button> {
 
     public Page() {
@@ -31,5 +33,21 @@ public class Page extends HashMap<Integer, Button> {
         Page other = new Page();
         forEach((slot, button) -> other.put(slot, button.clone()));
         return other;
+    }
+
+    public Button put(String position, Button button) {
+        return put(positionToSlot(position), button);
+    }
+
+    public Button remove(String position) {
+        return remove(positionToSlot(position));
+    }
+
+    private static int positionToSlot(String position) {
+        String[] split = position.replace(" ", "").split(",");
+        int x = Integer.parseInt(split[0]);
+        int y = Integer.parseInt(split[1]);
+
+        return y * 9 + x;
     }
 }

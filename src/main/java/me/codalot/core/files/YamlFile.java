@@ -3,12 +3,12 @@ package me.codalot.core.files;
 import lombok.Getter;
 import me.codalot.core.CodalotPlugin;
 import me.codalot.core.utils.CollectionUtils;
-import me.codalot.core.utils.XMaterial;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -71,9 +71,13 @@ public class YamlFile extends YamlConfiguration {
         load();
     }
 
-    public String getColoredString(String key) {
+    public String getColoredString(String key, String def) {
         String string = getString(key);
-        return string == null ? null : ChatColor.translateAlternateColorCodes('&', string);
+        return string == null ? def : ChatColor.translateAlternateColorCodes('&', string);
+    }
+
+    public String getColoredString(String key) {
+        return getColoredString(key, null);
     }
 
     public List<String> getColoredStringlist(String key) {
@@ -104,16 +108,27 @@ public class YamlFile extends YamlConfiguration {
         if (lore != null && !lore.isEmpty())
             meta.setLore(lore);
 
+        if (getBoolean(meta + ".glow", false))
+            meta.addEnchant(Enchantment.DURABILITY, 1, true);
+
         meta.setUnbreakable(getBoolean(path + ".unbreakable", false));
+
+        meta.addItemFlags(ItemFlag.values());
 
         item.setItemMeta(meta);
         return item;
     }
 
-    @SuppressWarnings("all")
+    private static Material getMaterial(String name) {
+        try {
+            return (Material) Material.class.getDeclaredField(name).get(null);
+        } catch (Exception ignored) {}
+
+        return Material.STONE;
+    }
+
     public ItemStack getItem(String path) {
-        Material material = Material.matchMaterial(getString(path + ".material"));
-        return getItem(material, path);
+        return getItem(getMaterial(getString(path + ".material", "STONE")), path);
     }
 
     @SuppressWarnings("all")
@@ -133,30 +148,6 @@ public class YamlFile extends YamlConfiguration {
         }
 
         set(path + ".amount", item.getAmount());
-    }
-
-    @SuppressWarnings("all")
-    public ItemStack getItemStack(String key) {
-        ConfigurationSection section = getConfigurationSection(key);
-        XMaterial material = XMaterial.valueOf(section.getString("material"));
-
-        return getItemStack(material.parseMaterial(), key);
-    }
-
-    public ItemStack getItemStack(Material material, String key) {
-        String name = getColoredString(key + ".name");
-        List<String> lore = getColoredStringlist(key + ".lore");
-
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-
-        if (meta != null) {
-            meta.setDisplayName(name);
-            meta.setLore(lore);
-            item.setItemMeta(meta);
-        }
-
-        return item;
     }
 
     @SuppressWarnings("all")

@@ -1,16 +1,17 @@
-package me.codalot.core.gui;
+package me.codalot.core.gui.components;
 
 import lombok.Getter;
 import lombok.Setter;
 import me.codalot.core.utils.PlaceholderUtils;
+import me.codalot.core.utils.SoundUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 @Getter
@@ -23,6 +24,9 @@ public class Button {
     private String permission;
     private String noPermissionMessage;
 
+    private String noPermissionSound;
+    private String sound;
+
     private List<String> commands;
     private boolean console;
 
@@ -34,12 +38,35 @@ public class Button {
         this.permission = null;
         this.noPermissionMessage = null;
 
+        this.noPermissionSound = null;
+        this.sound = null;
+
         this.commands = new ArrayList<>();
         this.console = true;
+
     }
 
     public Button(ItemStack item) {
         this(item, (player, type) -> {});
+    }
+
+    @SuppressWarnings("all")
+    public Button(Map<String, ItemStack> items, Map<String, BiConsumer<Player, ClickType>> actions, Map<String, Object> map) {
+        item = items.get((String) map.get("item")).clone();
+        action = actions.get((String) map.getOrDefault("action", ""));
+        if (action == null)
+            action = (player, type) -> {};
+
+        permission = (String) map.get("permission");
+        noPermissionMessage = map.containsKey("no-permission-message") ?
+                ChatColor.translateAlternateColorCodes('&', (String) map.get("no-permission-message")) :
+                null;
+
+        noPermissionSound = (String) map.get("no-permission-sound");
+        sound = (String) map.get("sound");
+
+        commands = map.containsKey("commands") ? (List<String>) map.get("commands") : new ArrayList<>();
+        console = (boolean) map.getOrDefault("console", true);
     }
 
     public void click(Player player, ClickType type) {
@@ -47,8 +74,12 @@ public class Button {
             if (noPermissionMessage != null)
                 player.sendMessage(noPermissionMessage);
 
+            SoundUtils.play(player, noPermissionSound);
+
             return;
         }
+
+        SoundUtils.play(player, sound);
 
         action.accept(player, type);
         executeCommands(player);
@@ -70,7 +101,7 @@ public class Button {
 
     @Override
     @SuppressWarnings("all")
-    protected Button clone() {
+    public Button clone() {
         Button other = new Button(item.clone(), action);
 
         other.setPermission(permission);
@@ -78,6 +109,8 @@ public class Button {
 
         other.setCommands(commands);
         other.setConsole(console);
+
+        other.setSound(sound);
 
         return other;
     }

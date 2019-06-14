@@ -2,6 +2,7 @@ package me.codalot.core.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.json.simple.JSONObject;
@@ -73,7 +74,7 @@ public class SkullUtils {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", value, signature));
 
-        ItemStack item = XMaterial.PLAYER_HEAD.parseItem();
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
         
         try {
