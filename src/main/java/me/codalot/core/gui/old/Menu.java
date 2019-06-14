@@ -1,8 +1,8 @@
-package me.codalot.core.gui;
+package me.codalot.core.gui.old;
 
 import lombok.Getter;
 import me.codalot.core.CodalotPlugin;
-import me.codalot.core.gui.components.Button;
+import me.codalot.core.gui.old.components.Button;
 import me.codalot.core.managers.types.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

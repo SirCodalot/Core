@@ -1,4 +1,4 @@
-package me.codalot.core.gui.components;
+package me.codalot.core.gui.old.components;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;

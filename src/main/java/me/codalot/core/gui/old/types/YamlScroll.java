@@ -1,10 +1,10 @@
-package me.codalot.core.gui.types;
+package me.codalot.core.gui.old.types;
 
 import lombok.Getter;
 import lombok.Setter;
 import me.codalot.core.CodalotPlugin;
 import me.codalot.core.files.YamlFile;
-import me.codalot.core.gui.components.Button;
+import me.codalot.core.gui.old.components.Button;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

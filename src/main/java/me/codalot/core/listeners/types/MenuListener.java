@@ -1,40 +1,44 @@
 package me.codalot.core.listeners.types;
 
+
 import me.codalot.core.CodalotPlugin;
-import me.codalot.core.gui.Menu;
+import me.codalot.core.gui.CodalotMenu;
 import me.codalot.core.listeners.CodalotListener;
-import me.codalot.core.managers.types.MenuManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 
 @SuppressWarnings("unused")
 public class MenuListener extends CodalotListener {
 
+    private CodalotPlugin plugin;
+
+    public MenuListener(CodalotPlugin plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        CodalotMenu menu = getMenu(event.getInventory());
 
-        MenuManager manager = CodalotPlugin.getInstance().getManager(MenuManager.class);
-        if (manager == null)
-            return;
-
-        Menu menu = manager.getMenus().get(event.getInventory());
-        if (menu == null)
-            return;
-
-        menu.onClick(event);
+        if (menu != null)
+            menu.onInventoryClick(event);
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        MenuManager manager = CodalotPlugin.getInstance().getManager(MenuManager.class);
-        if (manager == null)
-            return;
+        CodalotMenu menu = getMenu(event.getInventory());
 
-        if (manager.getMenus().get(event.getInventory()) == null)
-            return;
+        if (menu != null)
+            menu.onInventoryClose(event, plugin);
+    }
 
-        manager.update();
+    private CodalotMenu getMenu(Inventory inventory) {
+        if (inventory.getHolder() instanceof CodalotMenu)
+            return (CodalotMenu) inventory.getHolder();
+        else
+            return null;
     }
 
 }

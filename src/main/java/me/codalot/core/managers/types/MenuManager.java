@@ -1,7 +1,7 @@
 package me.codalot.core.managers.types;
 
 import lombok.Getter;
-import me.codalot.core.gui.Menu;
+import me.codalot.core.gui.old.Menu;
 import me.codalot.core.managers.Manager;
 import org.bukkit.inventory.Inventory;
 
