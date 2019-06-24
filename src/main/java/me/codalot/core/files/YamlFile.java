@@ -3,6 +3,7 @@ package me.codalot.core.files;
 import lombok.Getter;
 import me.codalot.core.CodalotPlugin;
 import me.codalot.core.utils.CollectionUtils;
+import me.codalot.core.utils.MaterialUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -119,16 +120,8 @@ public class YamlFile extends YamlConfiguration {
         return item;
     }
 
-    private static Material getMaterial(String name) {
-        try {
-            return (Material) Material.class.getDeclaredField(name).get(null);
-        } catch (Exception ignored) {}
-
-        return Material.STONE;
-    }
-
     public ItemStack getItem(String path) {
-        return getItem(getMaterial(getString(path + ".material", "STONE")), path);
+        return getItem(MaterialUtils.getMaterial(getString(path + ".material", "STONE")), path);
     }
 
     @SuppressWarnings("all")
